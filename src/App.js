@@ -6,6 +6,33 @@ import "./App.css";
 //FORECAST
 // https://api.openweathermap.org/data/2.5/forecast?lat=51.50&lon=-0.1257&appid=9a5f765dda744649945dcc4179975b67&units=metric
 
+function GetDayDisplayName(day) {
+  var weekdays = new Array(7);
+  weekdays[0] = "Sunday";
+  weekdays[1] = "Monday";
+  weekdays[2] = "Tuesday";
+  weekdays[3] = "Wednesday";
+  weekdays[4] = "Thursday";
+  weekdays[5] = "Friday";
+  weekdays[6] = "Saturday";
+  var displayName = weekdays[day];
+  return displayName;
+}
+
+function DayForecastComponent({ day }) {
+  const date = new Date(day.dt_txt);
+  const name = GetDayDisplayName(date.getDay());
+
+  return (
+    <div>
+      {name}
+      <div className="forecastDays">{Math.round(day.main.temp)}°C</div>
+      <div>{day.main.humidity}%</div>
+      <div>{day.weather[0].main}</div>
+    </div>
+  );
+}
+
 function App() {
   const [weatherState, setWeatherState] = useState({
     main: {},
@@ -20,14 +47,14 @@ function App() {
       .then((response) => response.json())
       .then((data) => setWeatherState(data));
 
-    fetch("http://localhost:3000/forecast.json") 
-      .then((response) => response.json()) 
+    fetch("http://localhost:3000/forecast.json")
+      .then((response) => response.json())
       .then((data) => {
         const days = [];
-        for (var i=0; i < data.list.length; i+=8){
-          days.push(data.list[i])
+        for (var i = 0; i < data.list.length; i += 8) {
+          days.push(data.list[i]);
         }
-        setForecastState(days)
+        setForecastState(days);
       });
   });
 
@@ -50,13 +77,13 @@ function App() {
             <h2>{Math.round(weatherState.main.temp)}°C</h2>
             <p>{weatherState.weather[0].main}</p>
             <p>
-              H:{Math.round(weatherState.main.temp_min)}° L:
-              {Math.round(weatherState.main.temp_max)}°
+              H:{Math.round(weatherState.main.temp_max)}° L:
+              {Math.round(weatherState.main.temp_min)}°
             </p>
           </div>
-          <div className="description">
+          {/* <div className="date">
             <p>Today 20.06.2022</p>
-          </div>
+          </div> */}
         </div>
         <div className="flipCard">
           <div className="flipCardInner">
@@ -64,8 +91,9 @@ function App() {
               <p>5-DAYS Forecast</p>
             </div>
             <div className="flipCardBack">
-             { forecastState.map((element)=> <p>{element.dt_txt}</p>)}
-             
+              {forecastState.map((element) => (
+                <DayForecastComponent day={element} />
+              ))}
             </div>
           </div>
         </div>
