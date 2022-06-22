@@ -4,6 +4,7 @@ import "./Homepage.css";
 
 function Homepage() {
   let navigate= useNavigate();
+  const [location,setLocation] = useState('');
 
   return (
 
@@ -14,9 +15,11 @@ function Homepage() {
           <input
             className="input"
             type="text"
+            value={location}
             placeholder="&#128269; Enter Location"
+            onChange={e=>{setLocation(e.target.value)}}
           ></input>
-          <button className="searchButton" type="button" onClick={()=>{navigate('/dashboard')}}>
+          <button className="searchButton" type="button" onClick={()=>{navigate(`/dashboard/${location}`)}}>
             Search
           </button>
         </div>

@@ -5,16 +5,14 @@ import Homepage from "./Homepage";
 import Dashboard from "./Dashboard";
 import NoPage from "./NoPage";
 import "./index.css";
-import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 export default function RouterApp() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Homepage />}>
-          <Route path="dashboard" element={<Dashboard />} />
-        </Route>
+        <Route path="/" element={<Homepage />}/>
+        <Route path="/dashboard/:location" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   );
