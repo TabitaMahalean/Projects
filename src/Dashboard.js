@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./Dashboard.css";
-//CURENT
-//https://api.openweathermap.org/data/2.5/weather?lat=51.50&lon=-0.1257&appid=9a5f765dda744649945dcc4179975b67&units=metric
-
-//FORECAST
-// https://api.openweathermap.org/data/2.5/forecast?lat=51.50&lon=-0.1257&appid=9a5f765dda744649945dcc4179975b67&units=metric
 
 function GetDayDisplayName(day) {
   var weekdays = new Array(7);
@@ -45,21 +40,41 @@ function Dashboard() {
 
   const [forecastState, setForecastState] = useState([]);
 
+  console.log("create component");
   useEffect(() => {
-    fetch("http://localhost:3000/weather.json")
-      .then((response) => response.json())
-      .then((data) => setWeatherState(data));
+    console.log("useEffect");
 
-    fetch("http://localhost:3000/forecast.json")
+    const locationDetailsUrl = "http://localhost:3000/location.json";
+    // const locationDetailsUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${params.location}&limit=1&appid=9a5f765dda744649945dcc4179975b67`;
+
+    fetch(locationDetailsUrl)
       .then((response) => response.json())
       .then((data) => {
-        const days = [];
-        for (var i = 0; i < data.list.length; i += 8) {
-          days.push(data.list[i]);
-        }
-        setForecastState(days);
+        const lat = data[0].lat;
+        const lon = data[0].lon;
+        console.log(lat);
+        console.log(lon);
+
+        const currentWeatherUrl = "http://localhost:3000/weather.json";
+        // const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=9a5f765dda744649945dcc4179975b67&units=metric`;
+
+        fetch(currentWeatherUrl)
+          .then((response) => response.json())
+          .then((data) => setWeatherState(data));
+
+        const forecastWeatherUrl = "http://localhost:3000/forecast.json";
+        // const forecastWeatherUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=9a5f765dda744649945dcc4179975b67&units=metric`;
+        fetch(forecastWeatherUrl)
+          .then((response) => response.json())
+          .then((data) => {
+            const days = [];
+            for (var i = 0; i < data.list.length; i += 8) {
+              days.push(data.list[i]);
+            }
+            setForecastState(days);
+          });
       });
-  });
+  }, [params.location]);
 
   return (
     <div className="app">
