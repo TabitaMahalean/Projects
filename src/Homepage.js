@@ -8,7 +8,7 @@ function Homepage() {
 
   return (
 
-    <div className="app">
+    <div className="app-container">
       <div className="homepage-container">
         <h2>Weather</h2>
         <div className="search">

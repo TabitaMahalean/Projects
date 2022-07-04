@@ -9,7 +9,7 @@ h2 {
 
 .app {
   text-align: center;
-  background: url("./assets/img3.jpg") no-repeat center center/cover;
+  background: url("./assets/img7.jpg") no-repeat center center/cover;
   color: #fff;
   position: absolute;
   width: 100%;
@@ -31,6 +31,18 @@ h2 {
   justify-content: space-between;
 }
 
+.loading {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100px;
+  text-align: center;
+  margin: auto;
+  padding: 1rem;
+  text-shadow: #282c34;
+  color: gray;
+}
+
 .app .top {
   width: 100%;
   margin: 1rem auto;
@@ -49,6 +61,7 @@ h2 {
   text-align: center;
   border-radius: 12px;
   background-color: rgba(255, 255, 255, 0.2);
+
 }
 
 .input {
@@ -78,10 +91,17 @@ input:hover {
   margin-left: 4px;
 }
 
+.back {
+  height: 25px;
+  border-radius: 5px;
+  border: solid 1.5px #d3d3d3;
+  margin-left: 4px;
+}
+
 .flipCard {
   background-color: transparent;
   perspective: 1000px;
-  margin-bottom: 6%;
+  margin-bottom: 1%;
 }
 
 .flipCardInner {
