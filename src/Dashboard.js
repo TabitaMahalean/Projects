@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./Dashboard.css";
-import DayForecastComponent from "./DayForecastComponent";
+import DayForecastComponent from "./components/DayForecastComponent";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -10,13 +10,16 @@ function Dashboard() {
     main: {},
     weather: [{ main: "" }],
     wind: {},
+    sys: {},
+    dt: 0,
+    timezone: 0,
   });
 
   const [forecastState, setForecastState] = useState([]);
 
   useEffect(() => {
-    const locationDetailsUrl = "http://localhost:3000/location.json";
-    // const locationDetailsUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${params.location}&limit=1&appid=9a5f765dda744649945dcc4179975b67`;
+    // const locationDetailsUrl = "http://localhost:3000/location.json";
+    const locationDetailsUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${params.location}&limit=1&appid=9a5f765dda744649945dcc4179975b67`;
 
     fetch(locationDetailsUrl)
       .then((response) => response.json())
@@ -24,20 +27,24 @@ function Dashboard() {
         const lat = data[0].lat;
         const lon = data[0].lon;
 
-        const currentWeatherUrl = "http://localhost:3000/weather.json";
-        // const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=9a5f765dda744649945dcc4179975b67&units=metric`;
+        // const currentWeatherUrl = "http://localhost:3000/weather.json";
+        const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=9a5f765dda744649945dcc4179975b67&units=metric`;
 
         fetch(currentWeatherUrl)
           .then((response) => response.json())
           .then((data) => setWeatherState(data));
 
-        const forecastWeatherUrl = "http://localhost:3000/forecdddast.json";
-        // const forecastWeatherUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=9a5f765dda744649945dcc4179975b67&units=metric`;
+        // const forecastWeatherUrl = "http://localhost:3000/forecdddast.json";
+        const forecastWeatherUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=9a5f765dda744649945dcc4179975b67&units=metric`;
         fetch(forecastWeatherUrl)
           .then((response) => response.json())
           .then((data) => {
             const days = [];
-            for (var i = 0; i < data.list.length; i += 8) {
+            for (
+              var i = 0;
+              i < data.list.length;
+              i += 8 //iau cate o valoare pe zi
+            ) {
               days.push(data.list[i]);
             }
             setForecastState(days);
@@ -45,10 +52,18 @@ function Dashboard() {
       });
   }, [params.location]);
 
-  // const isLoading = forecastState.length === 0;
-  const isLoading = true;
+  const locationDate = new Date(weatherState.dt * 1000); //fus orar local,
+  const timeZoneOffsetSeconds = locationDate.getTimezoneOffset() * 60 * 1000; //secunde intre GMT si Ora Locala
+  const weatherLocationOffsetSeconds = weatherState.timezone * 1000; // secunde intre GMT si ora Locatiei unde va fi
+  locationDate.setTime(
+    locationDate.getTime() +
+      timeZoneOffsetSeconds +
+      weatherLocationOffsetSeconds
+  );
+
+  const isLoading = forecastState.length === 0;
+  // const isLoading = true;
   return (
-    // <div className="app" style={{backgroundImage:'url("http://localhost:3000/img5.jpg")'}}>
     <div className="app">
       <div className="container">
         <div className="top">
@@ -62,10 +77,18 @@ function Dashboard() {
             >
               Back
             </button>
-            {!isLoading && <p>{weatherState.name}</p>}
+            {!isLoading && (
+              <p>
+                {weatherState.name},{weatherState.sys.country}
+                <br />
+                {locationDate.toDateString()}
+              </p>
+            )}
+
             {isLoading && (
               <div className="loading">
-                <img src="/Loading.svg"></img>Loading Weather...
+                <img className="loadingIcon" src="/Loading.svg"></img>Loading
+                Weather...
               </div>
             )}
           </div>

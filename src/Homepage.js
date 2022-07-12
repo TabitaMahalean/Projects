@@ -10,7 +10,7 @@ function Homepage() {
 
     <div className="app-container">
       <div className="homepage-container">
-        <h2>Weather</h2>
+        
         <div className="search">
           <input
             className="input"
@@ -22,6 +22,7 @@ function Homepage() {
           <button className="searchButton" type="button" onClick={()=>{navigate(`/dashboard/${location}`)}}>
             Search
           </button>
+          <p>Welcome to weather app</p>
         </div>
       </div>
     </div>
